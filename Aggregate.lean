@@ -64,8 +64,11 @@ theorem aggregateOutput_hasDerivAt (p : AggregateInputs) :
   have hconstant : HasDerivAt
       (fun _ : ℝ => p.eta * (1 - p.delta) * p.nF) 0 p.threshold :=
     hasDerivAt_const p.threshold (p.eta * (1 - p.delta) * p.nF)
-  convert hscaled.sub hconstant using 1 <;>
-    simp only [aggregateOutput, aggregateSlope] <;> ring
+  convert hscaled.sub hconstant using 1
+  · funext t
+    rfl
+  · simp [aggregateSlope]
+    ring
 
 /-- Under the substantive conditions in the proposition, aggregate output
 falls strictly as the capability cutoff rises. -/
@@ -83,12 +86,13 @@ theorem aggregateSlope_negative
 deliberately independent of a particular cdf implementation: a later file can
 derive `mean_gap` from an atomless distribution with positive density. -/
 structure TailMeanSelection where
-  lower upper : ℝ
+  lower : ℝ
+  upper : ℝ
   mean : ℝ → ℝ
   gapFactor : ℝ → ℝ → ℝ
-  mean_gap : ∀ {s t : ℝ}, lower ≤ t → t < s → s ≤ upper →
+  mean_gap : ∀ s t : ℝ, lower ≤ t → t < s → s ≤ upper →
     mean s - mean t = (s - t) * gapFactor t s
-  gapFactor_pos : ∀ {s t : ℝ}, lower ≤ t → t < s → s ≤ upper →
+  gapFactor_pos : ∀ s t : ℝ, lower ≤ t → t < s → s ≤ upper →
     0 < gapFactor t s
 
 /-- Raising an admissible selection cutoff strictly raises the average
@@ -97,8 +101,8 @@ theorem tailMean_strictly_increases
     (p : TailMeanSelection) {s t : ℝ}
     (ht : p.lower ≤ t) (hts : t < s) (hs : s ≤ p.upper) :
     p.mean t < p.mean s := by
-  have hgap := p.mean_gap ht hts hs
-  have hfactor : 0 < p.gapFactor t s := p.gapFactor_pos ht hts hs
+  have hgap := p.mean_gap s t ht hts hs
+  have hfactor : 0 < p.gapFactor t s := p.gapFactor_pos s t ht hts hs
   have hdiff : 0 < (s - t) * p.gapFactor t s :=
     mul_pos (sub_pos.mpr hts) hfactor
   linarith
@@ -110,7 +114,7 @@ theorem journalAverageOutput_strictly_increases
     (hqJ : 0 < qJ)
     (ht : p.lower ≤ t) (hts : t < s) (hs : s ≤ p.upper) :
     qJ * p.mean t < qJ * p.mean s := by
-  exact (mul_lt_mul_left hqJ).2 (tailMean_strictly_increases p ht hts hs)
+  exact mul_lt_mul_of_pos_left (tailMean_strictly_increases p ht hts hs) hqJ
 
 end
 
