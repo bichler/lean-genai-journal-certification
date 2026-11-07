@@ -23,6 +23,7 @@ theorem xStar_kappa_rhs_normal_form
       theta * rho * (chi * B - rho * A) / (D chi kap rho) ^ 2 := by
   simp only [yStar]
   field_simp [hD]
+  ring
 
 /-- The quotient-rule normal form for `∂y*/∂κ`. -/
 theorem yStar_kappa_rhs_normal_form
@@ -31,6 +32,7 @@ theorem yStar_kappa_rhs_normal_form
       -theta * chi * (chi * B - rho * A) / (D chi kap rho) ^ 2 := by
   simp only [yStar]
   field_simp [hD]
+  ring
 
 /-- The quotient-rule normal form for `∂x*/∂χ`. -/
 theorem xStar_chi_rhs_normal_form
@@ -39,6 +41,7 @@ theorem xStar_chi_rhs_normal_form
       -theta * kap * (kap * A - rho * B) / (D chi kap rho) ^ 2 := by
   simp only [xStar]
   field_simp [hD]
+  ring
 
 /-- The quotient-rule normal form for `∂y*/∂χ`. -/
 theorem yStar_chi_rhs_normal_form
@@ -47,6 +50,7 @@ theorem yStar_chi_rhs_normal_form
       theta * rho * (kap * A - rho * B) / (D chi kap rho) ^ 2 := by
   simp only [xStar]
   field_simp [hD]
+  ring
 
 /-- Sign of the `∂x*/∂κ` right-hand side under the article's interior
 assumptions. -/
@@ -180,13 +184,8 @@ theorem lookThroughThreshold_strictMono_kappa
     lookThroughThreshold kap₁ chi rho lam < lookThroughThreshold kap₂ chi rho lam ↔
       kap₁ < kap₂ := by
   unfold lookThroughThreshold
-  constructor
-  · intro h
-    have h' := (div_lt_div_iff₀ hden hden).mp h
-    nlinarith
-  · intro h
-    apply (div_lt_div_iff₀ hden hden).mpr
-    nlinarith
+  rw [div_lt_div_iff₀ hden hden]
+  nlinarith
 
 /-- The threshold is weakly decreasing in substantive-execution cost when
 `lam` is nonnegative. -/
@@ -256,6 +255,7 @@ theorem look_through_iff_kappa_gt_hat
       (rho + lam * chi) * (sy / sx) - lam * rho =
           (rho + lam * chi) * sy / sx - lam * rho := by
             field_simp [ne_of_gt hsx]
+            ring
       _ < (kap + lam * rho) - lam * rho := by linarith
       _ = kap := by ring
   · intro h
@@ -263,6 +263,7 @@ theorem look_through_iff_kappa_gt_hat
       have hrewrite : (rho + lam * chi) * sy / sx =
           (rho + lam * chi) * (sy / sx) := by
         field_simp [ne_of_gt hsx]
+        ring
       rw [hrewrite]
       linarith
     have hmul : (rho + lam * chi) * sy < (kap + lam * rho) * sx :=

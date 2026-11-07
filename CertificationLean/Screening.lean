@@ -147,6 +147,7 @@ theorem log_frontier_differential_identity
   simp only [logFrontierDifferential, serviceDifferential]
   rw [hcapacity]
   field_simp [htime, hservice]
+  ring
 
 /-! ## Complementarity (Proposition 5) -/
 
@@ -230,6 +231,7 @@ theorem credibility_ratio_eq_scaled_delay_ratio
       (psiM / psiF) * delayTriageRatio Nf etaF Nm etaM := by
   simp [credibilityTriageRatio, delayTriageRatio]
   field_simp [hpsiF, hremoval]
+  ring
 
 theorem marginal_removal_pos
     {N elasticity : ℝ}

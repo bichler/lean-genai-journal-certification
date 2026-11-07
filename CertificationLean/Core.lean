@@ -55,8 +55,7 @@ theorem foc_at_star
       ∧ rho * xStar theta chi kap rho A B + kap * yStar theta chi kap rho A B = theta * B := by
   have hD0 : chi * kap - rho ^ 2 ≠ 0 := by
     simpa [D] using ne_of_gt hD
-  constructor <;> simp only [xStar, yStar] <;> field_simp [hD0] <;>
-    simp [D] <;> ring
+  constructor <;> simp only [xStar, yStar, D] <;> field_simp [hD0] <;> ring
 
 /-- Completing the square for the quadratic cost. -/
 theorem quadratic_complete_square
@@ -65,7 +64,7 @@ theorem quadratic_complete_square
       chi * (x + (rho / chi) * y) ^ 2 + (D chi kap rho / chi) * y ^ 2 := by
   simp only [quadratic, D]
   field_simp [hchi]
-  ring_nf
+  ring
 
 /-- Positive definiteness of the quadratic cost matrix, in the form needed below. -/
 theorem quadratic_nonneg
@@ -91,10 +90,9 @@ theorem utility_gap
   have hD0 : D chi kap rho ≠ 0 := ne_of_gt hD
   have hdet : chi * kap - rho ^ 2 ≠ 0 := by
     simpa [D] using hD0
-  simp only [utility, xStar, yStar, quadratic]
+  simp only [utility, xStar, yStar, quadratic, D]
   field_simp [htheta0, hdet]
-  simp [D]
-  ring_nf
+  ring
 
 /-- Lemma 1: the proposed effort pair is globally optimal under the positive
 definiteness and positive-capability assumptions. -/
@@ -134,9 +132,8 @@ theorem utility_at_star
       theta * phi chi kap rho A B := by
   have hdet : chi * kap - rho ^ 2 ≠ 0 := by
     simpa [D] using hD
-  simp only [utility, xStar, yStar, phi, quadratic]
+  simp only [utility, xStar, yStar, phi, quadratic, D]
   field_simp [htheta, hdet]
-  simp [D]
   ring
 
 /-- Algebraic form of the output difference between two regimes. -/
@@ -193,8 +190,8 @@ theorem regime_compare_of_reward_order
     exact add_nonneg hrho (mul_nonneg hlam hchi)
   have hleft : 0 < (kap + lam * rho) * (Am - Al) :=
     mul_pos hleftcoef (sub_pos.mpr hA)
-  have hright : (rho + lam * chi) * (Bm - Bl) ≤ 0 :=
-    mul_nonpos_of_nonneg_of_nonpos hrightcoef (sub_nonpos.mpr hB)
+  have hright : 0 ≤ (rho + lam * chi) * (Bm - Bl) :=
+    mul_nonneg hrightcoef (sub_nonneg.mpr hB)
   linarith
 
 /-- The non-divided form of Corollary 1's look-through condition. -/

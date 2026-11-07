@@ -18,8 +18,6 @@ namespace Certification.Participation
 
 open Set Function
 
-noncomputable section
-
 /-! ## Fixed credibility (Proposition 7) -/
 
 /-- A response rule has a fixed point at `n` on the stated feasible interval. -/
@@ -153,8 +151,7 @@ theorem fixedPoint_le_of_response_le
   have hyx : y < x := lt_of_not_ge hnot
   have h1 : f x ≤ f y := hanti hy hx (le_of_lt hyx)
   have h2 : f y ≤ g y := hfg y hy
-  rw [hfx] at h1
-  rw [hgy] at h2
+  rw [hfx, hgy] at h1 h2
   linarith
 
 /-- If delay rises, an antitone submission-demand function weakly falls. -/
@@ -228,7 +225,7 @@ an application supplies this lemma after proving monotonicity of its payoff
 and cdf expression.
 -/
 theorem bestResponse_zero_below_cutoff
-    {br : ℝ → ℝ} {z γ : ℝ}
+    {br : ℝ → ℝ} {n z γ : ℝ}
     (hz : 0 < z) (hγ0 : 0 ≤ γ) (hγ1 : γ < 1)
     (hzero_of_credibility : ∀ m, 0 ≤ m → credibility m z ≤ γ → br m = 0) :
     ∀ m, 0 ≤ m → m ≤ collapseCutoff γ z → br m = 0 := by
@@ -322,7 +319,5 @@ largest high fixed point is stable from above requires a compactness/sign
 argument for the particular best-response curve.  Those are deliberately not
 represented by an unchecked postulate here.
 -/
-
-end
 
 end Certification.Participation
